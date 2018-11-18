@@ -1,0 +1,24 @@
+
+    module cloud_bg(clk, video_on, x, y, color);
+    parameter ROM_WIDTH = 12;
+    parameter ROM_ADDR_BITS = 16;
+
+    (* rom_style="block" *)
+    reg [ROM_WIDTH-1:0] rom [(2**ROM_ADDR_BITS)-1:0];
+    input wire clk;
+    input wire video_on;
+    input wire [7:0] x;
+    input wire [7:0] y;
+    reg [ROM_ADDR_BITS-1:0] address;
+    output reg [ROM_WIDTH-1:0] color;
+
+    initial
+      $readmemh("cloud_bg.hex", rom);
+
+    always @(posedge clk)
+      if (video_on) begin
+         address <= {y, x};
+         color <= rom[address];
+      end
+    endmodule
+    
